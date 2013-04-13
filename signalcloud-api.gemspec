@@ -5,15 +5,17 @@ require 'signalcloud-api/version'
 
 Gem::Specification.new do |gem|
   gem.name          = "signalcloud-api"
-  gem.version       = Signalcloud::Api::VERSION
+  gem.version       = SignalCloud::VERSION
   gem.authors       = ["Ian Lloyd"]
-  gem.email         = ["ian.w.lloyd@gmail.com"]
-  gem.description   = %q{TODO: Write a gem description}
-  gem.summary       = %q{TODO: Write a gem summary}
-  gem.homepage      = ""
+  gem.email         = ["ian@signalcloudapp.com"]
+  gem.description   = %q{Access the SignalCloud API to manage tickets.}
+  gem.summary       = %q{Tap into the SignalCloud API.}
+  gem.homepage      = "http://www.signalcloudapp.com/api"
 
   gem.files         = `git ls-files`.split($/)
   gem.executables   = gem.files.grep(%r{^bin/}).map{ |f| File.basename(f) }
   gem.test_files    = gem.files.grep(%r{^(test|spec|features)/})
   gem.require_paths = ["lib"]
+  
+  gem.add_dependency( 'api_smith', '~> 1.2.0' )
 end

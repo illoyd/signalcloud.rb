@@ -1,5 +1,3 @@
-module Signalcloud
-  module Api
-    VERSION = "0.0.1"
-  end
+module SignalCloud
+  VERSION = "0.0.1"
 end
