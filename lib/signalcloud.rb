@@ -1,6 +1,7 @@
 require "signalcloud/version"
 require 'api_smith'
 
+require 'signalcloud/organization'
 require 'signalcloud/stencil'
 require 'signalcloud/message'
 require 'signalcloud/conversation'
@@ -31,30 +32,39 @@ module SignalCloud
       add_request_options!( basic_auth: {username: self.username, password: self.password} )
     end
     
-    def stencils( options={} )
-      get 'stencils.json', extra_query: options, response_container: %w( stencils ), transform: SignalCloud::Stencil
+    def organizations( options={} )
+      get "organizations.json", extra_query: options, response_container: %w( organizations ), transform: SignalCloud::Organization
     end
 
-    def stencil( id )
-      get "stencils/#{id}.json", response_container: %w( stencil ), transform: SignalCloud::Stencil
+    def organization( organization_id, options={} )
+      get "organizations/#{organization_id}.json", extra_query: options, response_container: %w( organization ), transform: SignalCloud::Organization
+    end
+
+    def stencils( organization_id, options={} )
+      get "organizations/#{organization_id}/stencils.json", extra_query: options, response_container: %w( stencils ), transform: SignalCloud::Stencil
+    end
+
+    def stencil( organization_id, id )
+      get "organizations/#{organization_id}/stencils/#{id}.json", response_container: %w( stencil ), transform: SignalCloud::Stencil
     end
     
-    def conversations( options={} )
-      get "conversations.json", extra_query: options, response_container: %w( tickets ), transform: SignalCloud::Conversation
+    def conversations( organization_id, options={} )
+      get "organizations/#{organization_id}/conversations.json", extra_query: options, response_container: %w( conversations ), transform: SignalCloud::Conversation
     end
 
-    def conversation( id )
-      get "conversations/#{id}.json", response_container: %w( ticket ), transform: SignalCloud::Conversation
+    def conversation( organization_id, id )
+      get "organizations/#{organization_id}/conversations/#{id}.json", response_container: %w( conversation ), transform: SignalCloud::Conversation
     end
   
 #     def open_tickets( id )
 #       get "stencils/#{id}/tickets/open.json", response_container: %w( tickets ), transform: SignalCloud::Ticket
 #     end
     
-    def start_conversation( params={} )
-      ticket_uri = 'conversations.json'
-      ticket_uri = "stencils/#{params[:stencil_id]}/#{ticket_uri}" if params.include? :stencil_id
-      post ticket_uri, extra_query: { ticket: params }, response_container: %w( ticket ), transform: SignalCloud::Ticket
+    def start_conversation( organization_id, params={} )
+      conversation_uri = 'conversations.json'
+      conversation_uri = "stencils/#{params[:stencil_id]}/#{conversation_uri}" if params.include? :stencil_id
+      conversation_uri = "organizations/#{organization_id}/#{conversation_uri}"
+      post conversation_uri, extra_query: { conversation: params }, response_container: %w( conversation ), transform: SignalCloud::Conversation
     end
     
     private
