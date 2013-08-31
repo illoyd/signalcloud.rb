@@ -1,10 +1,10 @@
 # -*- encoding: utf-8 -*-
 lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require 'signalcloud-api/version'
+require 'signalcloud/version'
 
 Gem::Specification.new do |gem|
-  gem.name          = "signalcloud-api"
+  gem.name          = "signalcloud"
   gem.version       = SignalCloud::VERSION
   gem.authors       = ["Ian Lloyd"]
   gem.email         = ["ian@signalcloudapp.com"]
@@ -18,4 +18,6 @@ Gem::Specification.new do |gem|
   gem.require_paths = ["lib"]
   
   gem.add_dependency 'api_smith', '~> 1.2.0'
+  
+  gem.add_development_dependency 'rspec'
 end
