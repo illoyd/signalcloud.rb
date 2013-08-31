@@ -20,3 +20,10 @@ RSpec.configure do |config|
   #     --seed 1234
   config.order = 'random'
 end
+
+def test_client
+  username = ENV['SIGNALCLOUD_TEST_USERNAME']
+  password = ENV['SIGNALCLOUD_TEST_PASSWORD']
+  service_uri = 'http://localhost:5000'
+  SignalCloud::Client.new( username, password, base_uri: service_uri)
+end
