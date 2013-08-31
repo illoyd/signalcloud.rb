@@ -1,13 +1,10 @@
+Gemfile.lock
 *.gem
 *.rbc
 .bundle
 .config
-.yardoc
-Gemfile.lock
-InstalledFiles
-_yardoc
 coverage
-doc/
+InstalledFiles
 lib/bundler/man
 pkg
 rdoc
@@ -16,4 +13,20 @@ test/tmp
 test/version_tmp
 tmp
 
-test.rb
+# YARD artifacts
+.yardoc
+_yardoc
+doc/
+
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+
+
+# Thumbnails
+._*
+
+# Files that might appear on external disk
+.Spotlight-V100
+.Trashes
