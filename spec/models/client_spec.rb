@@ -44,6 +44,15 @@ describe SignalCloud::Client do
         expect { SignalCloud::Client.new() }.to raise_error
       end
     end
+    
+    context 'when providing options' do
+      let(:base_uri) { 'http://localhost:5000' }
+      let(:options)  {
+        { base_uri: base_uri }
+      }
+      subject { SignalCloud::Client.new( username, password, options ) }
+      its('class.base_uri') { should == base_uri }
+    end
 
   end
 

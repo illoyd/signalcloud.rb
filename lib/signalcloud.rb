@@ -15,11 +15,16 @@ module SignalCloud
     
     attr_reader :username, :password
 
-    def initialize( username=nil, password=nil )
+    def initialize( username=nil, password=nil, options={} )
       @username = username || ENV['SIGNALCLOUD_USERNAME']
       @password = password || ENV['SIGNALCLOUD_PASSWORD']
       
       raise SignalCloudError.new( 'Username or Password was nil. Define your credentials either through parameters or through the SIGNALCLOUD_USERNAME and SIGNALCLOUD_PASSWORD environment variables.' ) if ( @username.nil? or @password.nil? )
+      
+      options.each do |key,value|
+        send(key, value) if respond_to? key
+        self.class.send(key, value) if self.class.respond_to? key
+      end
       
       add_request_options!( basic_auth: {username: self.username, password: self.password} )
     end
