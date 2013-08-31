@@ -18,6 +18,9 @@ module SignalCloud
     def initialize( username=nil, password=nil )
       @username = username || ENV['SIGNALCLOUD_USERNAME']
       @password = password || ENV['SIGNALCLOUD_PASSWORD']
+      
+      raise SignalCloudError.new( 'Username or Password was nil. Define your credentials either through parameters or through the SIGNALCLOUD_USERNAME and SIGNALCLOUD_PASSWORD environment variables.' ) if ( @username.nil? or @password.nil? )
+      
       add_request_options!( basic_auth: {username: self.username, password: self.password} )
     end
     
