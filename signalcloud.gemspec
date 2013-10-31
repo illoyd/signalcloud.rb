@@ -20,5 +20,5 @@ Gem::Specification.new do |gem|
   gem.add_dependency 'api_smith', '~> 1.2.0'
   
   gem.add_development_dependency 'rspec'
-  gem.add_development_dependency 'simplecov', require: false
+  gem.add_development_dependency 'simplecov'
 end
