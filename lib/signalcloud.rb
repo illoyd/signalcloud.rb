@@ -77,11 +77,9 @@ module SignalCloud
       # Raise specific errors
       raise InvalidCredentialError.new(response['error']) if response.code == 401
       raise ObjectNotFoundError if response.code == 404
-      
-      puts response
 
       # Raise a general error
-      if response.is_a?(Hash) and (error = response['error'])
+      if response.is_a?(Hash) and (error = response['error'] || response['errors'])
         raise SignalCloudError.new(error)
       end
     end
