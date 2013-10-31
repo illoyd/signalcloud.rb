@@ -14,7 +14,7 @@ module SignalCloud
 
   class Client
     include ::APISmith::Client
-    base_uri "https://app.signalcloudapp.com/"
+    base_uri "https://us.signalcloudapp.com/"
     
     attr_reader :username, :password
 
