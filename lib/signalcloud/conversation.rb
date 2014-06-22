@@ -3,8 +3,8 @@ module SignalCloud
   class Conversation < ::APISmith::Smash
     property :id,                   transformer: :to_i
     property :stencil_id,           transformer: :to_i
-    property :to_number
-    property :from_number
+    property :customer_number
+    property :internal_number
     
     property :status
     property :status_text
