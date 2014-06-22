@@ -6,7 +6,7 @@ describe SignalCloud::Client do
   
   describe '#conversations' do
     it 'returns a list of conversations' do
-      client.conversations(organization_id).should_not be_empty
+      expect( client.conversations(organization_id) ).not_to be_empty
     end
   end
 
@@ -35,9 +35,9 @@ describe SignalCloud::Client do
     it 'starts a new conversation from a stencil' do
       conversation = nil
       expect{ conversation = client.start_conversation( organization_id, options ) }.not_to raise_error
-      conversation.id.should_not be_nil
-      conversation.customer_number.should == number
-      conversation.internal_number.should_not be_nil
+      expect( conversation.id).not_to be_nil
+      expect( conversation.customer_number ).to eq( number )
+      expect( conversation.internal_number ).not_to be_nil
     end
   end
 

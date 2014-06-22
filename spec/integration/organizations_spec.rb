@@ -5,7 +5,7 @@ describe SignalCloud::Client do
 
   describe '#organizations' do
     it 'returns a list of organizations' do
-      client.organizations.should_not be_empty
+      expect( client.organizations ).not_to be_empty
     end
   end
 

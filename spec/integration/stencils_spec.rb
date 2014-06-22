@@ -6,7 +6,7 @@ describe SignalCloud::Client do
   
   describe '#stencils' do
     it 'returns a list of stencils' do
-      client.stencils(organization_id).should_not be_empty
+      expect( client.stencils(organization_id) ).not_to be_empty
     end
   end
 
