@@ -1,4 +1,4 @@
-# Signalcloud::Api
+# Signalcloud
 
 TODO: Write a gem description
 
