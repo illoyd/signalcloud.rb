@@ -53,6 +53,38 @@ describe SignalCloud::Client do
       subject { SignalCloud::Client.new( username, password, options ) }
       its('class.base_uri') { should == base_uri }
     end
+    
+    context 'when using environment URI' do
+      before(:each) do # Set environment variables
+        ENV['SIGNALCLOUD_URI'] = uri_or_region
+      end
+      after(:each) do # Purge environment variables
+        ENV.delete 'SIGNALCLOUD_URI'
+      end
+      subject { SignalCloud::Client.new() }
+    
+      context 'when using US region' do
+        let(:uri_or_region) { 'US' }
+        let(:expected_uri)  { SignalCloud::US_BASE_URI }
+
+        its(:base_uri) { should == uri_or_region }
+      end
+      
+      context 'when using EU region' do
+        let(:uri_or_region) { 'EU' }
+        let(:expected_uri)  { SignalCloud::EU_BASE_URI }
+
+        its(:base_uri) { should == uri_or_region }
+      end
+      
+      context 'when using default region' do
+        let(:uri_or_region) { nil }
+        let(:expected_uri)  { SignalCloud::DEFAULT_BASE_URI }
+
+        its(:base_uri) { should == uri_or_region }
+      end
+    
+    end
 
   end
 
