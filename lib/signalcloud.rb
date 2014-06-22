@@ -7,6 +7,8 @@ require 'signalcloud/stencil'
 require 'signalcloud/message'
 require 'signalcloud/conversation'
 
+##
+# A helper library for working with the SignalCloud service.
 module SignalCloud
 
   ##
@@ -24,14 +26,38 @@ module SignalCloud
   ##
   # Standard SignalCloud error. All errors produced by the SignalCloud library or service will be raised as this Error class.
   class SignalCloudError < StandardError; end
+  
+  ##
+  # A SignalCloudError raised whenever the service cannot authenticate the provided user credentials.
   class InvalidCredentialError < SignalCloudError; end
+  
+  ##
+  # A SignalCloudError rasied whenever a requested object could not be found.
   class ObjectNotFoundError < SignalCloudError; end
 
+  ##
+  # The primary Client for using the SignalCloud service. Either sub-class this object to make your own client or use it directly.
+  #
+  # The Client uses several environment variables to automagically set defaults.
+  # [SIGNALCLOUD_URI] The service URI. May be either a fully qualified URI, or US or EU to use the respective region-specific service. Defaults to the EU service URI.
+  # [SIGNALCLOUD_USERNAME] A valid SignalCloud username
+  # [SIGNALCLOUD_PASSWORD] A valid SignalCloud password
   class Client
     include ::APISmith::Client
     
-    attr_reader :username, :password
+    ##
+    # The BASIC AUTH username for the SignalCloud service.
+    attr_reader :username
 
+    ##
+    # The BASIC AUTH password for the SignalCloud service.
+    attr_reader :password
+
+    ##
+    # Create a new Client
+    # [username] A SignalCloud username, or nil to use the SIGNALCLOUD_USERNAME environment variable
+    # [password] A SignalCloud password, or nil to use the SIGNALCLOUD_PASSWORD environment variable
+    # [options]  A Hash of options to pass to the Client. Keys may be any method which the Client understands, while the value must be in a format the method can understand.
     def initialize( username=nil, password=nil, options={} )
       @username = username || ENV['SIGNALCLOUD_USERNAME']
       @password = password || ENV['SIGNALCLOUD_PASSWORD']
@@ -50,30 +76,66 @@ module SignalCloud
       add_request_options!( basic_auth: {username: self.username, password: self.password} )
     end
     
+    ##
+    # Request all organizations available to this user account.
+    # [options] A Hash of key-value pairs to be submitted with the request as a query (i.e. after a ? in the request URI).
+    # Returns an Array of Organization objects.
     def organizations( options={} )
       get "organizations.json", extra_query: options, response_container: %w( organizations ), transform: SignalCloud::Organization
     end
 
+    ##
+    # Request a specific organization by unique ID.
+    # [organization_id] The ID of the holding Organization
+    # [options]         A Hash of key-value pairs to be submitted with the request as a query (i.e. after a ? in the request URI).
+    # Returns an Organization object.
     def organization( organization_id, options={} )
       get "organizations/#{organization_id}.json", extra_query: options, response_container: %w( organization ), transform: SignalCloud::Organization
     end
 
+    ##
+    # Request all stencils available to this user account and the specified organization.
+    # [organization_id] The ID of the holding Organization
+    # [options]         A Hash of key-value pairs to be submitted with the request as a query (i.e. after a ? in the request URI).
+    # Returns an Array of Stencil objects.
     def stencils( organization_id, options={} )
       get "organizations/#{organization_id}/stencils.json", extra_query: options, response_container: %w( stencils ), transform: SignalCloud::Stencil
     end
 
-    def stencil( organization_id, id )
-      get "organizations/#{organization_id}/stencils/#{id}.json", response_container: %w( stencil ), transform: SignalCloud::Stencil
+    ##
+    # Request a specific Stencil by Organization and Stencil IDs.
+    # [organization_id] The ID of the holding Organization
+    # [stencil_id]      The ID of the requested Stencil
+    # [options]         A Hash of key-value pairs to be submitted with the request as a query (i.e. after a ? in the request URI).
+    # Returns an Organization object.
+    def stencil( organization_id, stencil_id, options={} )
+      get "organizations/#{organization_id}/stencils/#{stencil_id}.json", extra_query: options, response_container: %w( stencil ), transform: SignalCloud::Stencil
     end
     
+    ##
+    # Request all Stencils available to this user account and the specified organization.
+    # [organization_id] The ID of the holding Organization
+    # [options]         A Hash of key-value pairs to be submitted with the request as a query (i.e. after a ? in the request URI).
+    # Returns an Array of Conversation objects.
     def conversations( organization_id, options={} )
       get "organizations/#{organization_id}/conversations.json", extra_query: options, response_container: %w( conversations ), transform: SignalCloud::Conversation
     end
 
-    def conversation( organization_id, id )
-      get "organizations/#{organization_id}/conversations/#{id}.json", response_container: %w( conversation ), transform: SignalCloud::Conversation
+    ##
+    # Request a specific Conversation by Organization and Conversation IDs.
+    # [organization_id] The ID of the holding Organization
+    # [conversation_id] The ID of the requested Conversation
+    # [options]         A Hash of key-value pairs to be submitted with the request as a query (i.e. after a ? in the request URI).
+    # Returns a Conversation object.
+    def conversation( organization_id, conversation_id, options={} )
+      get "organizations/#{organization_id}/conversations/#{conversation_id}.json", extra_query: options, response_container: %w( conversation ), transform: SignalCloud::Conversation
     end
     
+    ##
+    # Start a new Conversation for the given Organization.
+    # [organization_id] The ID of the holding Organization
+    # [options]         A Hash of key-value pairs to be submitted with the request. Please see http://www.signalcloudapp.com/dev for details on accepted parameters.
+    # Returns a Conversation object.
     def start_conversation( organization_id, params={} )
       conversation_uri = 'conversations.json'
       conversation_uri = "stencils/#{params[:stencil_id]}/#{conversation_uri}" if params.include? :stencil_id
@@ -102,11 +164,15 @@ module SignalCloud
     end
     
     private
-
+    
+    ##
+    # Always make requests as JSON.
     def base_query_options
       { :format => 'json' }
     end
     
+    ##
+    # Peform error checking on responses.
     def check_response_errors(response)
       # Raise specific errors
       raise InvalidCredentialError.new(response['error']) if response.code == 401
