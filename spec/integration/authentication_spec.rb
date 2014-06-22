@@ -26,9 +26,8 @@ describe SignalCloud::Client do
       expect{ client.organization(-1) }.to raise_error(SignalCloud::ObjectNotFoundError)
     end
     it 'raises misc error' do
-      pending('Need to configure server to not redirect when format is JSON.') {
-        expect{ client.organization(2) }.to raise_error(SignalCloud::SignalCloudError)
-      }
+      pending('Need to configure server to not redirect when format is JSON.')
+      expect{ client.organization(2) }.to raise_error(SignalCloud::SignalCloudError)
     end
   end
 
