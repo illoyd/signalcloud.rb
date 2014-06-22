@@ -151,7 +151,8 @@ module SignalCloud
     # * +US+ for the United States version.
     # If the parameter is blank or is not one of the country codes, will default to the EU version.
     def self.pick_base_uri(uri = nil)
-      case (uri || ENV['SIGNALCLOUD_URI']).to_s.strip.downcase
+      uri ||= ENV['SIGNALCLOUD_URI']
+      case uri.to_s.strip.downcase
       when 'eu'
         EU_BASE_URI
       when 'us'
