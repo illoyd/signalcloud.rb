@@ -1,6 +1,7 @@
 require "signalcloud/version"
 require 'api_smith'
 
+require 'signalcloud/time_transformer'
 require 'signalcloud/organization'
 require 'signalcloud/stencil'
 require 'signalcloud/message'

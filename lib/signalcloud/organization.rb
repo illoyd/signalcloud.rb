@@ -4,8 +4,8 @@ module SignalCloud
     property :id,                   transformer: :to_i
     property :label
 
-    property :created_at,           transformer: lambda { |v| Time.parse(v) rescue nil }
-    property :updated_at,           transformer: lambda { |v| Time.parse(v) rescue nil }
+    property :created_at,           transformer: TimeTransformer
+    property :updated_at,           transformer: TimeTransformer
   end
 
 end

@@ -23,12 +23,12 @@ module SignalCloud
     property :expired_reply
     property :failed_reply
 
-    property :created_at,           transformer: lambda { |v| Time.parse(v) rescue nil }
-    property :updated_at,           transformer: lambda { |v| Time.parse(v) rescue nil }
-    property :expires_at,           transformer: lambda { |v| Time.parse(v) rescue nil }
-    property :challenge_sent_at,    transformer: lambda { |v| Time.parse(v) rescue nil }
-    property :response_received_at, transformer: lambda { |v| Time.parse(v) rescue nil }
-    property :reply_received_at,    transformer: lambda { |v| Time.parse(v) rescue nil }
+    property :created_at,           transformer: TimeTransformer
+    property :updated_at,           transformer: TimeTransformer
+    property :expires_at,           transformer: TimeTransformer
+    property :challenge_sent_at,    transformer: TimeTransformer
+    property :response_received_at, transformer: TimeTransformer
+    property :reply_received_at,    transformer: TimeTransformer
   end
 
 end
