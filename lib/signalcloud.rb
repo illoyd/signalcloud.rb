@@ -8,13 +8,26 @@ require 'signalcloud/conversation'
 
 module SignalCloud
 
+  ##
+  # US service URI.
+  US_BASE_URI = 'https://us.signalcloudapp.com/'
+  
+  ##
+  # EU service URI.
+  EU_BASE_URI = 'https://eu.signalcloudapp.com/'
+  
+  ##
+  # The default service URI; currently defaults to the EU service.
+  DEFAULT_BASE_URI = EU_BASE_URI
+
+  ##
+  # Standard SignalCloud error. All errors produced by the SignalCloud library or service will be raised as this Error class.
   class SignalCloudError < StandardError; end
   class InvalidCredentialError < SignalCloudError; end
   class ObjectNotFoundError < SignalCloudError; end
 
   class Client
     include ::APISmith::Client
-    base_uri "https://us.signalcloudapp.com/"
     
     attr_reader :username, :password
 
@@ -67,6 +80,24 @@ module SignalCloud
       post conversation_uri, extra_query: { conversation: params }, response_container: %w( conversation ), transform: SignalCloud::Conversation
     end
     
+    ##
+    # Pick the appropriate base URI to use based on environment variables.
+    # Uses the +SIGNALCLOUD_URI+ environment variable to select the URI.
+    # Accepts one either a fully qualified URI, or country short-cuts as follows:
+    # * +EU+ for the European version.
+    # * +US+ for the United States version.
+    # If the parameter is blank or is not one of the country codes, will default to the EU version.
+    def self.pick_base_uri(uri=ENV['SIGNALCLOUD_URI'])
+      case uri.to_s.strip.downcase
+      when 'eu'
+        EU_BASE_URI
+      when 'us'
+        US_BASE_URI
+      else
+        uri.nil? || uri.strip == '' ? DEFAULT_BASE_URI : uri
+      end
+    end
+    
     private
 
     def base_query_options
@@ -84,6 +115,8 @@ module SignalCloud
       end
     end
   
+    # Configure the base URI.
+    base_uri pick_base_uri
   end
 
 end
