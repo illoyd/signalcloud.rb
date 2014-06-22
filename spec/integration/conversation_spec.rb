@@ -21,13 +21,14 @@ describe SignalCloud::Client do
     end
   end
   
-  describe '#start_conversation', :focus do
-    let(:stencil_id) { client.stencils(organization_id).first.id } 
+  describe '#start_conversation' do
+    let(:stencil_id) { 2 } 
+    # let(:stencil_id) { client.stencils(organization_id).first.id } 
     let(:number) { ENV['TEST_NUMBER'] }
     let(:options) do
       {
         stencil_id: stencil_id,
-        to_number: number
+        customer_number: number
       }
     end
     
@@ -35,8 +36,8 @@ describe SignalCloud::Client do
       conversation = nil
       expect{ conversation = client.start_conversation( organization_id, options ) }.not_to raise_error
       conversation.id.should_not be_nil
-      conversation.to_number.should == number
-      conversation.from_number.should_not be_nil
+      conversation.customer_number.should == number
+      conversation.internal_number.should_not be_nil
     end
   end
 

@@ -90,7 +90,7 @@ describe SignalCloud::Client do
       end
     
       context 'when using custom URI' do
-        let(:uri_or_region) { 'http://localhost:5000' }
+        let(:uri_or_region) { 'http://localhost:80' }
         let(:expected_uri)  { uri_or_region }
 
         its('class.base_uri') { should == expected_uri }
