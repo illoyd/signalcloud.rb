@@ -11,11 +11,11 @@ module SignalCloud
 
   ##
   # US service URI.
-  US_BASE_URI = 'https://us.signalcloudapp.com/'
+  US_BASE_URI = 'https://us.signalcloudapp.com'
   
   ##
   # EU service URI.
-  EU_BASE_URI = 'https://eu.signalcloudapp.com/'
+  EU_BASE_URI = 'https://eu.signalcloudapp.com'
   
   ##
   # The default service URI; currently defaults to the EU service.
@@ -37,12 +37,16 @@ module SignalCloud
       @password = password || ENV['SIGNALCLOUD_PASSWORD']
       
       raise SignalCloudError.new( 'Username or Password was nil. Define your credentials either through parameters or through the SIGNALCLOUD_USERNAME and SIGNALCLOUD_PASSWORD environment variables.' ) if ( @username.nil? or @password.nil? )
-      
+
+      # Assign base URI by parameters      
+      self.class.base_uri self.class.pick_base_uri
+
       options.each do |key,value|
-        send(key, value) if respond_to? key
         self.class.send(key, value) if self.class.respond_to? key
+        send(key, value) if respond_to? key
       end
       
+      #self.basic_auth(username, password)
       add_request_options!( basic_auth: {username: self.username, password: self.password} )
     end
     
@@ -69,10 +73,6 @@ module SignalCloud
     def conversation( organization_id, id )
       get "organizations/#{organization_id}/conversations/#{id}.json", response_container: %w( conversation ), transform: SignalCloud::Conversation
     end
-  
-#     def open_tickets( id )
-#       get "stencils/#{id}/tickets/open.json", response_container: %w( tickets ), transform: SignalCloud::Ticket
-#     end
     
     def start_conversation( organization_id, params={} )
       conversation_uri = 'conversations.json'
@@ -88,14 +88,16 @@ module SignalCloud
     # * +EU+ for the European version.
     # * +US+ for the United States version.
     # If the parameter is blank or is not one of the country codes, will default to the EU version.
-    def self.pick_base_uri(uri=ENV['SIGNALCLOUD_URI'])
-      case uri.to_s.strip.downcase
+    def self.pick_base_uri(uri = nil)
+      case (uri || ENV['SIGNALCLOUD_URI']).to_s.strip.downcase
       when 'eu'
         EU_BASE_URI
       when 'us'
         US_BASE_URI
+      when nil, ''
+        DEFAULT_BASE_URI
       else
-        uri.nil? || uri.strip == '' ? DEFAULT_BASE_URI : uri
+        uri
       end
     end
     
@@ -115,9 +117,7 @@ module SignalCloud
         raise SignalCloudError.new(error)
       end
     end
-  
-    # Configure the base URI.
-    base_uri pick_base_uri
+
   end
 
 end
